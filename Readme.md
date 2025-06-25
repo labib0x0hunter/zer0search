@@ -1,3 +1,5 @@
+Resources to complete this project...
+
 Projects Focused on Inverted Index Concepts
 1. dwayhs/go-search-engine
 
