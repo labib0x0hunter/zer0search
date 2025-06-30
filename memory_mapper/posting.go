@@ -62,22 +62,14 @@ func (p *Posting) Search(offset uint64, len uint64) ([]uint64, error) {
 	if p.closed {
 		return []uint64{}, errors.New("posting.index file is closed")
 	}
-
 	storedLen := encoder.Uint64(p.mmap[offset : offset+byteSize])
-
 	if storedLen != len {
 		return []uint64{}, errors.New("length size didn't match, maybe stored a wrong offset")
 	}
-
 	totalByte := (len * byteSize) + byteSize // lenSize for len, (len * lenSize) for slice
-
-	fmt.Println("[inside search posting] len :", len)
-	fmt.Println("[inside search posting] totalByte :", totalByte)
-
 	if offset+totalByte > MaxFileSize {
 		return []uint64{}, errors.New(" [INFO]posting.index does not have enough space")
 	}
-
 	docIds := make([]uint64, 0, len)
 	for i := 0; i < int(len); i++ {
 		offset += byteSize
@@ -95,23 +87,17 @@ func (p *Posting) Append(docId uint64, sizeInclude bool) (uint64, error) {
 	initialOffset := p.len
 	totalByte := byteSize
 	if sizeInclude {
-		totalByte = byteSize
+		totalByte = byteSize + byteSize
 	}
-
-	// slog.Info(fmt.Sprintf("[INFO] posting.go -> Append(docId, sizeInclude): initialOffset: %v, totalByte: %v", initialOffset, totalByte))
-
 	if p.IsFilled(totalByte) {
 		return 0, errors.New("posting.index file is reached to maximum size")
 	}
-
 	offset := initialOffset
 	if sizeInclude {
 		encoder.PutUint64(p.mmap[offset:offset+byteSize], uint64(1))
 		offset += byteSize
 	}
-
 	encoder.PutUint64(p.mmap[offset:offset+byteSize], docId)
-
 	p.len += totalByte
 	return initialOffset, nil
 }
@@ -128,11 +114,9 @@ func (p *Posting) Update(offset, size, docId uint64) (uint64, error) {
 	if p.IsFilled(totalByte + byteSize) { // mmap[offset: offset + totalbyte] -> for old slice, lenSize for new docId
 		return 0, errors.New("file is reached to maximum size")
 	}
-
 	copy(p.mmap[initialOffset:initialOffset+totalByte], p.mmap[offset:offset+totalByte])
 	encoder.PutUint64(p.mmap[initialOffset:initialOffset+byteSize], size+uint64(1))
 	p.len += totalByte
-
 	if _, err := p.Append(docId, false); err != nil {
 		return 0, err
 	}

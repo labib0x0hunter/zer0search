@@ -85,3 +85,88 @@ bytes written:  184
 bytes written:  192
 
 token:  hacker ,len:  6 , tokenHash:  8713676797236502622
+
+////////                ///////////                 ///////////////
+
+Document:  labib al faisal , docId:  1
+token:  labib
+ [index_repo.go]  ( 0 0 )
+post -> append:  0 8
+
+token:  al
+ [index_repo.go]  ( 0 0 )
+post -> append:  8 16
+
+token:  faisal
+ [index_repo.go]  ( 0 0 )
+post -> append:  16 24
+
+
+Document:   al  , docId:  2
+token:  al
+ [index_repo.go]  ( 8 1 )
+post -> update:  24 48
+
+
+Document:  hacking is goood , docId:  3
+token:  hacking
+ [index_repo.go]  ( 0 0 )
+post -> append:  48 56
+
+token:  is
+ [index_repo.go]  ( 0 0 )
+post -> append:  56 64
+
+token:  goood
+ [index_repo.go]  ( 0 0 )
+post -> append:  64 72
+
+
+Document:  labib is hacker , docId:  4
+token:  labib
+ [index_repo.go]  ( 0 1 )
+post -> update:  72 96
+
+token:  is
+ [index_repo.go]  ( 56 1 )
+post -> update:  96 120
+
+token:  hacker
+ [index_repo.go]  ( 0 0 )
+post -> append:  120 128
+
+
+Document:  labib is faisal , docId:  5
+token:  labib
+ [index_repo.go]  ( 72 2 )
+post -> update:  128 160
+
+token:  is
+ [index_repo.go]  ( 96 2 )
+post -> update:  160 192
+
+token:  faisal
+ [index_repo.go]  ( 16 1 )
+post -> update:  192 216
+
+
+Document:  labib is faisal also hacker , docId:  6
+token:  labib
+ [index_repo.go]  ( 128 3 )
+post -> update:  216 256
+
+token:  is
+ [index_repo.go]  ( 160 3 )
+post -> update:  256 296
+
+token:  faisal
+ [index_repo.go]  ( 192 2 )
+post -> update:  296 328
+
+token:  also
+ [index_repo.go]  ( 0 0 )
+post -> append:  328 336
+
+token:  hacker
+ [index_repo.go]  ( 120 1 )
+post -> update:  336 360

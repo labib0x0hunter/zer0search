@@ -3,6 +3,7 @@ package memorymapper
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -23,38 +24,28 @@ func NewDictionary(path string) (*Dictionary, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	dict.closed = false
-
 	info, err := file.Stat()
 	if err != nil {
 		return nil, err
 	}
-
 	size := info.Size()
-
 	dict.len = uint64(size)
-
 	// allocate capacity
 	if err := file.Truncate(int64(MaxFileSize)); err != nil {
 		return nil, err
 	}
-
 	dict.file = file
-
 	mmap, err := gommap.Map(
 		dict.file.Fd(),
 		gommap.PROT_READ|gommap.PROT_WRITE,
 		gommap.MAP_SHARED,
 	)
-
 	if err != nil {
 		file.Close()
 		return nil, err
 	}
-
 	dict.mmap = mmap
-
 	return dict, nil
 }
 
@@ -89,23 +80,13 @@ func (d *Dictionary) Append(hash, postingOffset, postingLen uint64) error {
 	if d.IsFilled(dictEntrySize) {
 		return errors.New("max filesize reached")
 	}
-
 	offset := d.len
-	// d.Debug(offset)
 	encoder.PutUint64(d.mmap[offset:offset+byteSize], hash)
 	offset += byteSize
-	// d.Debug(offset)
-
 	encoder.PutUint64(d.mmap[offset:offset+byteSize], postingOffset)
 	offset += byteSize
-	// d.Debug(offset)
-
 	encoder.PutUint64(d.mmap[offset:offset+byteSize], postingLen)
 	offset += byteSize
-	// d.Debug(offset)
-
-	// fmt.Println()
-
 	d.len += dictEntrySize
 	return nil
 }
@@ -118,9 +99,7 @@ func (d *Dictionary) Update(offset, postingOffset, postingLen uint64) error {
 	if offset+dictEntrySize > d.len {
 		return errors.New("[error] : SGMNT_FLT")
 	}
-
 	initialOffset := offset + byteSize
-
 	encoder.PutUint64(d.mmap[initialOffset:initialOffset+byteSize], postingOffset)
 	initialOffset += byteSize
 	encoder.PutUint64(d.mmap[initialOffset:initialOffset+byteSize], postingLen)
@@ -134,6 +113,7 @@ func (d *Dictionary) IsFilled(size uint64) bool {
 
 // close the dictionary.index
 func (d *Dictionary) Close() error {
+	slog.Info("[INSIDE] dictionary.go -> Close()")
 	if d.closed {
 		return errors.New("file is closed")
 	}

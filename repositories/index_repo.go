@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"fmt"
 	memorymapper "searchengine/memory_mapper"
 )
 
@@ -22,7 +21,6 @@ func NewIndexRepo(dict *memorymapper.Dictionary, post *memorymapper.Posting) *In
 // false : append docId in posting.index and append postingOffset in dictionary.index
 func (i *IndexRepo) Update(wordHash uint64, docId int64) error {
 	found, offset, postingOffset, postingLen, err := i.dict.Search(wordHash)
-	// fmt.Println(" [index_repo.go] [search] offset: ", offset, "postingOffset: ", postingOffset, "postingLen: ", postingLen)
 	if err != nil {
 		return err
 	}
@@ -35,8 +33,6 @@ func (i *IndexRepo) Update(wordHash uint64, docId int64) error {
 		if err != nil {
 			return err
 		}
-		i.dict.Debug()
-		fmt.Println()
 		return nil
 	}
 	postingOffset, err = i.post.Update(postingOffset, postingLen, uint64(docId))
@@ -47,8 +43,6 @@ func (i *IndexRepo) Update(wordHash uint64, docId int64) error {
 	if err != nil {
 		return err
 	}
-	i.dict.Debug()
-	fmt.Println()
 	return nil
 }
 

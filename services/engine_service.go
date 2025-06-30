@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"log/slog"
 	"searchengine/repositories"
 	"searchengine/tokenizer"
@@ -40,12 +39,10 @@ func NewEngineService(indexRepo *repositories.IndexRepo, docRepo *repositories.D
 **/
 
 func (e *EngineService) IndexDocument(document string) error {
-	fmt.Println("Document: ", document, ", docId: ", e.docId)
 	tokens := tokenizer.GetTokens(document)
 	var insertedFlag bool = false
 	for _, tok := range tokens.Tokens {
 		tokenHash := e.getHash(tok)
-		fmt.Println("token: ", tok, ",len: ", len(tok), ", tokenHash: ", tokenHash)
 		if err := e.indexRepo.Update(tokenHash, e.docId); err != nil {
 			slog.Error("[engine_service.go]		[IndexDocument()]	", err)
 			continue
@@ -80,18 +77,15 @@ To-do:
 **/
 
 func (e *EngineService) SearchDocument(document string) []string {
-	fmt.Println("Document: ", document)
 	tokens := tokenizer.GetTokens(document)
 	foundDocIds := make(map[uint64]struct{})
 	for _, tok := range tokens.Tokens {
 		tokenHash := e.getHash(tok)
-		fmt.Println("token: ", tok, ",len: ", len(tok), ", tokenHash: ", tokenHash)
 		tempSlice, err := e.indexRepo.GetDocIds(tokenHash)
 		if err != nil {
 			slog.Error("[engine_service.go]		[SearchDocument()]	", err)
 			continue
 		}
-		fmt.Println("token: ", tok, " docIdSlice: ", tempSlice)
 		// AND operation (intersection) on tempSlice and foundDocIds
 		if len(tempSlice) == 0 {
 			continue
@@ -111,8 +105,6 @@ func (e *EngineService) SearchDocument(document string) []string {
 		}
 		foundDocIds, commonDocId = commonDocId, foundDocIds
 	}
-
-	fmt.Println("Intersected docId: ", foundDocIds)
 
 	result := make([]string, 0, len(foundDocIds))
 	for docId := range foundDocIds {
