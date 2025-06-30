@@ -1,38 +1,23 @@
 package utils
 
 import (
-	"fmt"
-	"hash/maphash"
-	"path/filepath"
+	"github.com/cespare/xxhash/v2"
 )
 
-var seedFile = "seed.gob"
+// func GetHash(word string) uint64 {
+// 	h := xxhash.NewWithSeed(seed)
+// }
 
 type Hash struct {
-	h *maphash.Hash
+	h *xxhash.Digest
 }
 
-func NewHash(path string) (*Hash, error) {
-	var seed maphash.Seed
-	var err error
-
-	fmt.Println("Inside HASH -> ", filepath.Join(path, seedFile))
-
-	if !FileExists(filepath.Join(path, seedFile)) {
-		seed = maphash.MakeSeed()
-		if err = saveSeed(filepath.Join(path, seedFile), seed); err != nil {
-			fmt.Println(seed)
-			return nil, err
-		}
-	} else {
-		if seed, err = loadSeed(filepath.Join(path, seedFile)); err != nil {
-			return nil, err
-		}
+func NewHash(path string) *Hash {
+	// os.Remove(filepath.Join(path, seedFile))
+	var seed uint64
+	return &Hash{
+		h: xxhash.NewWithSeed(seed),
 	}
-
-	var h maphash.Hash
-	h.SetSeed(seed)
-	return &Hash{h: &h}, nil
 }
 
 func (h *Hash) WriteString(msg string) error {
