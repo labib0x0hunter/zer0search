@@ -46,18 +46,6 @@ func main() {
 
 	newHasher := utils.NewHash(path)
 
-	docRepo := repositories.NewDocumentRepo(newDb)
-	indexRepo := repositories.NewIndexRepo(newDict, newPost)
-	engineService := services.NewEngineService(indexRepo, docRepo, newHasher)
-	engineHandler := handler.NewEngineHandler(engineService)
-
-	router := gin.Default()
-
-	router.POST("/insert", engineHandler.Index)
-	router.POST("/search", engineHandler.Search)
-
-	router.Run(":8080")
-
 	// On shutdown CTRL + C
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
@@ -70,5 +58,15 @@ func main() {
 		os.Exit(0)
 	}(newDb, newDict, newPost)
 
-	select {}
+	docRepo := repositories.NewDocumentRepo(newDb)
+	indexRepo := repositories.NewIndexRepo(newDict, newPost)
+	engineService := services.NewEngineService(indexRepo, docRepo, newHasher)
+	engineHandler := handler.NewEngineHandler(engineService)
+
+	router := gin.Default()
+
+	router.POST("/insert", engineHandler.Index)
+	router.POST("/search", engineHandler.Search)
+
+	router.Run(":8080")
 }
