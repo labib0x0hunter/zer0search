@@ -14,7 +14,7 @@ type Posting struct {
 	file   *os.File
 	mmap   gommap.MMap // mmap
 	len    uint64      // current size
-	closed bool        // flag to check if the directory.index is closed
+	closed bool        // flag to check if the posting.index is closed
 }
 
 func NewPosting(path string) (*Posting, error) {
