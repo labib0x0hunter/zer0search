@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	path = filepath.Join(path, "../../")
+	utils.Path = filepath.Join(path, "../../")
 
 	newDb, err := db.NewDocumentMysqlDb()
 	if err != nil {
@@ -32,19 +32,19 @@ func main() {
 	}
 	defer newDb.Close()
 
-	newDict, err := memorymapper.NewDictionary(path)
+	newDict, err := memorymapper.NewDictionary()
 	if err != nil {
 		panic(err)
 	}
 	defer newDict.Close()
 
-	newPost, err := memorymapper.NewPosting(path)
+	newPost, err := memorymapper.NewPosting()
 	if err != nil {
 		panic(err)
 	}
 	defer newPost.Close()
 
-	newHasher := utils.NewHash(path)
+	newHasher := utils.NewHash()
 
 	// On shutdown CTRL + C
 	sigChan := make(chan os.Signal, 1)
@@ -64,7 +64,9 @@ func main() {
 	engineHandler := handler.NewEngineHandler(engineService)
 
 	router := gin.Default()
+	router.Static("/", filepath.Join(utils.Path, "static"))
 
+	router.NoRoute(engineHandler.FrontPage)
 	router.POST("/insert", engineHandler.Index)
 	router.POST("/search", engineHandler.Search)
 
