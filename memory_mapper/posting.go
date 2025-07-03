@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"searchengine/utils"
 
 	"github.com/tysonmote/gommap"
 )
@@ -17,11 +18,11 @@ type Posting struct {
 	closed bool        // flag to check if the posting.index is closed
 }
 
-func NewPosting(path string) (*Posting, error) {
-	os.Remove(filepath.Join(path, postingIndexFile))
-	slog.Info(" [NewPosting] Path -> " + filepath.Join(path, postingIndexFile))
+func NewPosting() (*Posting, error) {
+	os.Remove(filepath.Join(utils.Path, postingIndexFile))
+	slog.Info(" [NewPosting] Path -> " + filepath.Join(utils.Path, postingIndexFile))
 	dict := &Posting{}
-	file, err := os.OpenFile(filepath.Join(path, postingIndexFile), os.O_CREATE|os.O_RDWR, 0644)
+	file, err := os.OpenFile(filepath.Join(utils.Path, postingIndexFile), os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return nil, err
 	}

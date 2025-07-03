@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"searchengine/utils"
 
 	"github.com/tysonmote/gommap"
 )
@@ -17,10 +18,10 @@ type Dictionary struct {
 	closed bool        // flag to check if the directory.index is closed
 }
 
-func NewDictionary(path string) (*Dictionary, error) {
-	os.Remove(filepath.Join(path, dictIndexFile))
+func NewDictionary() (*Dictionary, error) {
+	os.Remove(filepath.Join(utils.Path, dictIndexFile))
 	dict := &Dictionary{}
-	file, err := os.OpenFile(filepath.Join(path, dictIndexFile), os.O_CREATE|os.O_RDWR, 0644)
+	file, err := os.OpenFile(filepath.Join(utils.Path, dictIndexFile), os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return nil, err
 	}

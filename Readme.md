@@ -1,6 +1,17 @@
 ### UNDER DEVELOPMENT ###
 
-  
+# Zer0 Search
+Zer0 Search is a platform that allows users to store documents and efficiently search through them using keywords.
+
+## Feature
+- Store documents
+- Keyword-based document search
+
+## To-do
+- Add authentication
+- Role based authentication
+- Public and private documents
+- Fix concurrent issues
 
 **Learning Material :**
 

@@ -12,9 +12,8 @@ type Hash struct {
 	h *xxhash.Digest
 }
 
-func NewHash(path string) *Hash {
+func NewHash() *Hash {
 	// os.Remove(filepath.Join(path, seedFile))
-	var seed uint64
 	return &Hash{
 		h: xxhash.NewWithSeed(seed),
 	}

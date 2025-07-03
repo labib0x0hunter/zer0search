@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"path/filepath"
 	"searchengine/models"
 	"searchengine/services"
+	"searchengine/utils"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -61,4 +63,8 @@ func (e *EngineHandler) Search(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, documents)
+}
+
+func (e *EngineHandler) FrontPage(ctx *gin.Context) {
+	ctx.File(filepath.Join(utils.Path, "static", "index.html"))
 }
